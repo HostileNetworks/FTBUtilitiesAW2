@@ -74,7 +74,7 @@ public class FTBUActions
 	
 	// Self //
 	
-	public static final PlayerAction friends_gui = new PlayerAction(PlayerAction.Type.SELF, "ftbu.friends_gui", 950, TextureCoords.getSquareIcon(new ResourceLocation("ftbu", "textures/gui/friendsbutton.png"), 256))
+	public static final PlayerAction friends_gui = new PlayerAction(PlayerAction.Type.SELF, "ftbu_aw2.friends_gui", 950, TextureCoords.getSquareIcon(new ResourceLocation("ftbu", "textures/gui/friendsbutton.png"), 256))
 	{
 		public void onClicked(ILMPlayer self, ILMPlayer other)
 		{ FTBLibClient.openGui(new GuiGuide(null, new GuideFriendsGUI())); }
@@ -83,10 +83,10 @@ public class FTBUActions
 		{ return FTBLibClient.isIngameWithFTBU(); }
 		
 		public String getDisplayName()
-		{ return "FriendsGUI"; }
+		{ return "Friends"; }
 	};
 	
-	public static final PlayerAction guide = new PlayerAction(PlayerAction.Type.SELF, "ftbu.guide", 0, GuiIcons.book)
+	public static final PlayerAction guide = new PlayerAction(PlayerAction.Type.SELF, "ftbu_aw2.guide", 0, GuiIcons.book)
 	{
 		public void onClicked(ILMPlayer self, ILMPlayer other)
 		{
@@ -101,7 +101,7 @@ public class FTBUActions
 		{ return Boolean.TRUE; }
 	};
 	
-	public static final PlayerAction info = new PlayerAction(PlayerAction.Type.SELF, "ftbu.server_info", 0, GuiIcons.book_red)
+	public static final PlayerAction info = new PlayerAction(PlayerAction.Type.SELF, "ftbu_aw2.server_info", 0, GuiIcons.book_red)
 	{
 		public void onClicked(ILMPlayer self, ILMPlayer other)
 		{ ClientAction.REQUEST_SERVER_INFO.send(0); }
@@ -113,7 +113,7 @@ public class FTBUActions
 		{ return Boolean.TRUE; }
 	};
 	
-	public static final PlayerAction claims = new PlayerAction(PlayerAction.Type.SELF, "ftbu.claimed_chunks", 0, GuiIcons.map)
+	public static final PlayerAction claims = new PlayerAction(PlayerAction.Type.SELF, "ftbu_aw2.claimed_chunks", 0, GuiIcons.map)
 	{
 		public void onClicked(ILMPlayer self, ILMPlayer other)
 		{ FTBLibClient.openGui(new GuiClaimChunks(0L)); }
@@ -125,7 +125,7 @@ public class FTBUActions
 		{ return Boolean.TRUE; }
 	};
 	
-	public static final PlayerAction trade = new PlayerAction(PlayerAction.Type.SELF, "ftbu.trade", 0, GuiIcons.money_bag)
+	public static final PlayerAction trade = new PlayerAction(PlayerAction.Type.SELF, "ftbu_aw2.trade", 0, GuiIcons.money_bag)
 	{
 		public void onClicked(ILMPlayer owner, ILMPlayer player)
 		{
@@ -140,7 +140,7 @@ public class FTBUActions
 	
 	// Other //
 	
-	public static final PlayerAction friend_add = new PlayerAction(PlayerAction.Type.OTHER, "ftbu.add_friend", 1, GuiIcons.add)
+	public static final PlayerAction friend_add = new PlayerAction(PlayerAction.Type.OTHER, "ftbu_aw2.add_friend", 1, GuiIcons.add)
 	{
 		public void onClicked(ILMPlayer self, ILMPlayer other)
 		{ ClientAction.ADD_FRIEND.send(other.getPlayerID()); }
@@ -149,7 +149,7 @@ public class FTBUActions
 		{ return FTBLibClient.isIngameWithFTBU() && !self.isFriendRaw(other); }
 	};
 	
-	public static final PlayerAction friend_remove = new PlayerAction(PlayerAction.Type.OTHER, "ftbu.rem_friend", -1, GuiIcons.remove)
+	public static final PlayerAction friend_remove = new PlayerAction(PlayerAction.Type.OTHER, "ftbu_aw2.rem_friend", -1, GuiIcons.remove)
 	{
 		public void onClicked(ILMPlayer self, ILMPlayer other)
 		{ ClientAction.REM_FRIEND.send(other.getPlayerID()); }
@@ -158,7 +158,7 @@ public class FTBUActions
 		{ return FTBLibClient.isIngameWithFTBU() && self.isFriendRaw(other); }
 	};
 	
-	public static final PlayerAction friend_deny = new PlayerAction(PlayerAction.Type.OTHER, "ftbu.deny_friend", -1, GuiIcons.remove)
+	public static final PlayerAction friend_deny = new PlayerAction(PlayerAction.Type.OTHER, "ftbu_aw2.deny_friend", -1, GuiIcons.remove)
 	{
 		public void onClicked(ILMPlayer self, ILMPlayer other)
 		{ ClientAction.DENY_FRIEND.send(other.getPlayerID()); }
@@ -167,7 +167,7 @@ public class FTBUActions
 		{ return FTBLibClient.isIngameWithFTBU() && !self.isFriendRaw(other) && other.isFriendRaw(self); }
 	};
 	
-	public static final PlayerAction mail = new PlayerAction(PlayerAction.Type.OTHER, "ftbu.mail", 0, GuiIcons.feather)
+	public static final PlayerAction mail = new PlayerAction(PlayerAction.Type.OTHER, "ftbu_aw2.mail", 0, GuiIcons.feather)
 	{
 		public void onClicked(ILMPlayer self, ILMPlayer other)
 		{
