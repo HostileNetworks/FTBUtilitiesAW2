@@ -27,6 +27,21 @@ public class FriendsAPI
 	}
 	
 	/**
+	 * Only server side! String equivalent, use player.getCommandSenderName() if necessary
+	 */
+	public static boolean areFriends(String player, String otherPlayer)
+    {
+        if(LMWorldServer.inst != null)
+        {
+            LMPlayer p0 = LMWorldServer.inst.getPlayer(player);
+            if(p0 == null) return false;
+            return p0.isFriend(LMWorldServer.inst.getPlayer(otherPlayer));
+        }
+        
+        return false;
+    }
+	
+	/**
 	 * Only server side! By default this value should be an empty list
 	 */
 	public static List<UUID> getFriends(UUID player)
