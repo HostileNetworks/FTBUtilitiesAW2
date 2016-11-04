@@ -37,7 +37,6 @@ public class LMPlayerClientSelf extends LMPlayerClient
 			claimedChunks = io.readUnsignedShort();
 			loadedChunks = io.readUnsignedShort();
 			maxClaimedChunks = io.readUnsignedShort();
-			maxLoadedChunks = io.readUnsignedShort();
 		}
 	}
 }

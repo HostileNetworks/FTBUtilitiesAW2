@@ -266,7 +266,6 @@ public class LMPlayerServer extends LMPlayer // LMPlayerClient
 			io.writeShort(getClaimedChunks());
 			io.writeShort(getLoadedChunks(true));
 			io.writeShort(rank.config.max_claims.get());
-			io.writeShort(rank.config.max_loaded_chunks.get());
 		}
 	}
 	
@@ -373,9 +372,6 @@ public class LMPlayerServer extends LMPlayer // LMPlayerClient
 			{
 				RankConfig c = getRank().config;
 				if(c.dimension_blacklist.get().contains(dim)) return;
-				int max = c.max_loaded_chunks.get();
-				if(max == 0) return;
-				if(getLoadedChunks(false) >= max) return;
 			}
 			
 			chunk.isChunkloaded = flag;

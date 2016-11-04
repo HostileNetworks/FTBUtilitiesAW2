@@ -40,10 +40,6 @@ public class RankConfig
 	@Info("Allow creative players access protected chests / chunks")
 	public final ConfigEntryBool allow_creative_interact_secure = new ConfigEntryBool("allow_creative_interact_secure", false);
 	
-	@NumberBounds(min = 0, max = 30000)
-	@Info({"Max amount of chunks that player can chunkload", "0 - Disabled"})
-	public final ConfigEntryInt max_loaded_chunks = new ConfigEntryInt("max_loaded_chunks", 50);
-	
 	@Info("If set to false, players won't be able to see others Rank in FriendsGUI")
 	public final ConfigEntryBool show_rank = new ConfigEntryBool("show_rank", true);
 	
