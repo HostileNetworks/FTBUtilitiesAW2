@@ -62,7 +62,8 @@ public class GuiClaimChunks extends GuiLM implements GuiYesNoCallback // impleme
 	public final LMPlayerClientSelf playerLM;
 	public final int currentDim, startX, startY;
 	
-	public final ButtonLM buttonRefresh, buttonClose, buttonUnclaimAll;
+	//public final ButtonLM buttonRefresh, buttonClose, buttonUnclaimAll;
+	public final ButtonLM buttonRefresh, buttonClose;
 	public final MapButton mapButtons[];
 	public final PanelLM panelButtons;
 	
@@ -87,8 +88,9 @@ public class GuiClaimChunks extends GuiLM implements GuiYesNoCallback // impleme
 				gui.close(null);
 			}
 		};
+		buttonClose.title = FTBLibLang.button_close.format();
 		
-		buttonRefresh = new ButtonLM(this, 0, 16, 16, 16)
+		buttonRefresh = new ButtonLM(this, 0, 20, 16, 16)
 		{
 			public void onButtonPressed(int b)
 			{
@@ -99,9 +101,9 @@ public class GuiClaimChunks extends GuiLM implements GuiYesNoCallback // impleme
 				FTBLibClient.playClickSound();
 			}
 		};
-		
 		buttonRefresh.title = FTBLibLang.button_refresh.format();
 		
+		/*
 		buttonUnclaimAll = new ButtonLM(this, 0, 32, 16, 16)
 		{
 			public void onButtonPressed(int b)
@@ -118,6 +120,7 @@ public class GuiClaimChunks extends GuiLM implements GuiYesNoCallback // impleme
 					l.add(FTBU.mod.translate("button.claims_unclaim_all_dim", FTBLibClient.mc.theWorld.provider.getDimensionName()));
 			}
 		};
+		*/
 		
 		panelButtons = new PanelLM(this, 0, 0, 16, 0)
 		{
@@ -126,19 +129,23 @@ public class GuiClaimChunks extends GuiLM implements GuiYesNoCallback // impleme
 				add(buttonClose);
 				add(buttonRefresh);
 				
+				/*
 				if(adminToken == 0L)
 				{
 					add(buttonUnclaimAll);
 				}
+				*/
 				
 				height = widgets.size() * 16;
 			}
 			
-			public int getAX()
-			{ return gui.getGui().width - 16; }
+			public int getAX() {
+			    return mainPanel.posX + mainPanel.width + 4;
+			}
 			
-			public int getAY()
-			{ return 0; }
+			public int getAY() {
+			    return mainPanel.posY - 2;
+			}
 		};
 		
 		mapButtons = new MapButton[tiles_gui * tiles_gui];
@@ -205,25 +212,32 @@ public class GuiClaimChunks extends GuiLM implements GuiYesNoCallback // impleme
 		renderMinimap();
 		
 		GlStateManager.color(1F, 1F, 1F, 1F);
+		
+		/*
 		for(int i = 0; i < mapButtons.length; i++)
 			mapButtons[i].renderWidget();
+		*/
+		
 		GlStateManager.color(1F, 1F, 1F, 1F);
 		
 		buttonRefresh.render(GuiIcons.refresh);
-		buttonClose.render(GuiIcons.accept);
+		buttonClose.render(GuiIcons.close);
 		
+		/*
 		if(adminToken == 0L)
 		{
 			buttonUnclaimAll.render(GuiIcons.remove);
 		}
+		*/
 	}
 	
-	public void drawText(List<String> l)
-	{
+	public void drawText(List<String> l) {
 		String s = FTBU.mod.translate("label.cchunks_count", (playerLM.claimedChunks + " / " + playerLM.maxClaimedChunks));
-		fontRendererObj.drawString(s, width - fontRendererObj.getStringWidth(s) - 4, height - 12, 0xFFFFFFFF);
+		fontRendererObj.drawString(s, width - fontRendererObj.getStringWidth(s) - 4, height - 36, 0xFFFFFFFF);
 		s = FTBU.mod.translate("label.lchunks_count", (playerLM.loadedChunks + " / " + playerLM.maxLoadedChunks));
 		fontRendererObj.drawString(s, width - fontRendererObj.getStringWidth(s) - 4, height - 24, 0xFFFFFFFF);
+		s = FTBU.mod.translate("label.chunk_map_aw2_info");
+        fontRendererObj.drawString(s, width - fontRendererObj.getStringWidth(s) - 4, height - 12, 0xFFFFFFFF);
 		
 		super.drawText(l);
 	}
@@ -310,7 +324,7 @@ public class GuiClaimChunks extends GuiLM implements GuiYesNoCallback // impleme
 		refreshWidgets();
 	}
 	
-	public static class MapButton extends ButtonLM
+	public class MapButton extends ButtonLM
 	{
 		public final GuiClaimChunks gui;
 		public final int chunkX, chunkY;
@@ -325,26 +339,22 @@ public class GuiClaimChunks extends GuiLM implements GuiYesNoCallback // impleme
 			chunkY = g.startY + (i / tiles_gui);
 		}
 		
-		public void onButtonPressed(int b)
-		{
+		public void onButtonPressed(int b) {
+		    // Don't allow claiming or unclaiming, only our Town Halls do this
+		    /*
 			if(gui.panelButtons.mouseOver()) return;
 			if(gui.adminToken != 0L && b == 0) return;
 			boolean ctrl = FTBUClient.loaded_chunks_space_key.get() ? Keyboard.isKeyDown(Keyboard.KEY_SPACE) : isCtrlKeyDown();
 			new MessageClaimChunk(gui.currentDim, gui.adminToken, chunkX, chunkY, (b == 0) ? (ctrl ? MessageClaimChunk.ID_LOAD : MessageClaimChunk.ID_CLAIM) : (ctrl ? MessageClaimChunk.ID_UNLOAD : MessageClaimChunk.ID_UNCLAIM)).sendToServer();
 			FTBLibClient.playClickSound();
+			*/
 		}
 		
-		public void addMouseOverText(List<String> l)
-		{ ClaimedAreasClient.getMessage(chunkX, chunkY, l, isShiftKeyDown()); }
-		
-		public void renderWidget()
-		{
-			if(mouseOver())
-			{
-				GlStateManager.color(1F, 1F, 1F, 0.27F);
-				drawBlankRect(getAX(), getAY(), gui.getZLevel(), 16, 16);
-				GlStateManager.color(1F, 1F, 1F, 1F);
-			}
+		public void addMouseOverText(List<String> l) { 
+		    ClaimedAreasClient.getMessage(chunkX, chunkY, l, isShiftKeyDown());
+		    // also draw a box around the hovered chunk
+		    FTBLibClient.setTexture(tex_area);
+		    GuiLM.drawTexturedRectD(getAX(), getAY(), zLevel, 16, 16, 0, 0, .25, .25);
 		}
 	}
 }
