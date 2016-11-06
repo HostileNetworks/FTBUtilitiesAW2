@@ -157,8 +157,6 @@ public class JsonElementIO
 			{
 				Number n = p.getAsNumber();
 				
-				System.out.println(n.getClass());
-				
 				if(n instanceof Integer)
 				{
 					io.writeByte(JsonID.INT.ID);

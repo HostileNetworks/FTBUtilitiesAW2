@@ -1,10 +1,10 @@
 [
 {
-  "modid": "FTBU",
-  "name": "FTBUtilities",
-  "description": "FTBUtilities",
+  "modid": "FTBU_AW2",
+  "name": "FTBUtilities AW2 Mod",
+  "description": "FTBUtilities modified for CosmicDan's AW2 fork. Originall designed for use with the Reign modpack. NOT SUPPORTED BY LATVIAN MODDER OR FTB.",
   "version": "${version}",
-  "url": "http://minecraft.curseforge.com/projects/ftb-utilities",
+  "url": "",
   "updateUrl": "",
   "authorList": [
     "LatvianModder"
