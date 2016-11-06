@@ -52,5 +52,6 @@ public class ClaimedAreasClient
 			}
 			else l.add(typeE.getChatColor(null) + typeE.getIDS());
 		}
+		l.add(x + "x" + z);
 	}
 }
