@@ -7,6 +7,7 @@ ftbu_aw2.label.deaths=Deaths: %s
 ftbu_aw2.button.block_security=Block Security
 ftbu_aw2.label.cchunks_count=Claimed Chunks: %s
 ftbu_aw2.label.lchunks_count=Loaded Chunks: %s
+ftbu_aw2.label.chunk_map_aw2_info=Use Town Halls to claim land. All claimed land is permanently chunk loaded.
 
 #ClientConfig
 client_config.ftbu_aw2=ftbu_aw2tilities
@@ -93,3 +94,11 @@ ftbu_aw2.chunktype.world_border.warning=You have reached the world border!
 ftbu_aw2.chunktype.wilderness=Wilderness
 ftbu_aw2.chunktype.claimed=Claimed Area
 ftbu_aw2.chunktype.chunkloaded=Chunkloaded
+
+#aw2
+ftbu_aw2.notification.townhall_lost=Town Hall lost!
+ftbu_aw2.notification.townhall_lost_secondary.msg=Borders unchanged.
+ftbu_aw2.notification.townhall_lost_flipped.msg=Territory lost to %s
+ftbu_aw2.notification.townhall_lost_wilderness.msg=Borders reduced.
+ftbu_aw2.notification.chunk_position=Region: %s x %s
+ftbu_aw2.notification.click_to_remove=Click to remove notification

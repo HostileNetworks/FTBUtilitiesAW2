@@ -150,7 +150,7 @@ public class GuiClaimChunks extends GuiLM implements GuiYesNoCallback // impleme
 		
 		mapButtons = new MapButton[tiles_gui * tiles_gui];
 		for(int i = 0; i < mapButtons.length; i++)
-			mapButtons[i] = new MapButton(this, 0, 0, i);
+            mapButtons[i] = new MapButton(this, 0, 0, i);
 	}
 	
 	public void initLMGui()
@@ -213,10 +213,10 @@ public class GuiClaimChunks extends GuiLM implements GuiYesNoCallback // impleme
 		
 		GlStateManager.color(1F, 1F, 1F, 1F);
 		
-		/*
+		
 		for(int i = 0; i < mapButtons.length; i++)
 			mapButtons[i].renderWidget();
-		*/
+		
 		
 		GlStateManager.color(1F, 1F, 1F, 1F);
 		
@@ -233,9 +233,10 @@ public class GuiClaimChunks extends GuiLM implements GuiYesNoCallback // impleme
 	
 	public void drawText(List<String> l) {
 		String s = FTBU.mod.translate("label.cchunks_count", (playerLM.claimedChunks + " / " + playerLM.maxClaimedChunks));
-		fontRendererObj.drawString(s, width - fontRendererObj.getStringWidth(s) - 4, height - 36, 0xFFFFFFFF);
-		s = FTBU.mod.translate("label.lchunks_count", (playerLM.loadedChunks + " / " + playerLM.maxLoadedChunks));
 		fontRendererObj.drawString(s, width - fontRendererObj.getStringWidth(s) - 4, height - 24, 0xFFFFFFFF);
+		// we use our own chunk loader in TileTownHall. Can't be bothered reflecting the TE count here.
+		//s = FTBU.mod.translate("label.lchunks_count", (playerLM.loadedChunks + " / " + playerLM.maxLoadedChunks));
+		//fontRendererObj.drawString(s, width - fontRendererObj.getStringWidth(s) - 4, height - 24, 0xFFFFFFFF);
 		s = FTBU.mod.translate("label.chunk_map_aw2_info");
         fontRendererObj.drawString(s, width - fontRendererObj.getStringWidth(s) - 4, height - 12, 0xFFFFFFFF);
 		
@@ -250,17 +251,41 @@ public class GuiClaimChunks extends GuiLM implements GuiYesNoCallback // impleme
 	{ return ClaimedAreasClient.getTypeE(cx, cy); }
 	
 	@SuppressWarnings("unchecked")
-	public void renderMinimap()
-	{
+	public void renderMinimap() {
+	    // draw x/z axis
+	    // we multiply/divide a few things by 2 here because we've scaled to half size
+	    GL11.glPushMatrix();
+	    GL11.glScalef(0.5f, 0.5f, 1f);
+	    for(int x = 0; x < tiles_gui; x++) {
+            String cx = Integer.toString(x + startX);
+            fontRendererObj.drawString(cx, (mainPanel.posX * 2) + x * (16 * 2) + (16 - fontRendererObj.getStringWidth(cx) / 2), mainPanel.posY * 2 - 16, 0xFFFFFFFF);
+        }
+	    
+	    for(int z = 0; z < tiles_gui; z++) {
+	        String cz = Integer.toString(z + startY);
+	        fontRendererObj.drawString(cz, (mainPanel.posX * 2) - (fontRendererObj.getStringWidth(cz)) - 8, (mainPanel.posY * 2) + z * (16 * 2) + 12, 0xFFFFFFFF);
+	    }
+	    //GL11.glScalef(1f, 1f, 1f);
+	    GL11.glPopMatrix();
+	    /*
+        for(int y = 0; y < tiles_gui; y++)
+            for(int x = 0; x < tiles_gui; x++) {
+                int cx = x + startX;
+                int cy = y + startY;
+                //this.drawCenteredString(this.getFontRenderer(), "1", x, y, 0xffffffff);
+                //System.out.println(cx + "x" + cy);
+                fontRendererObj.drawString("1", mainPanel.posX + x * 16, mainPanel.posY + y * 16, 0xFFFFFFFF);
+            }
+        */
 		FTBLibClient.setTexture(tex_area);
 		
 		for(int y = 0; y < tiles_gui; y++)
-			for(int x = 0; x < tiles_gui; x++)
-			{
+			for(int x = 0; x < tiles_gui; x++) {
 				int cx = x + startX;
 				int cy = y + startY;
 				
 				ChunkType type = getType(cx, cy);
+				
 				if(type.drawGrid())
 				{
 					boolean a = type.equals(getType(cx, cy - 1));

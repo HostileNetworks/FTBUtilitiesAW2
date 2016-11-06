@@ -42,7 +42,7 @@ public class LMFakeServerPlayer extends LMPlayerServer
 	public Rank getRank()
 	{ return Ranks.PLAYER; }
 	
-	public void claimChunk(int dim, int cx, int cz) { }
+	public boolean claimChunk(int dim, int cx, int cz) { return false; }
 	
 	public void unclaimChunk(int dim, int cx, int cz) { }
 	

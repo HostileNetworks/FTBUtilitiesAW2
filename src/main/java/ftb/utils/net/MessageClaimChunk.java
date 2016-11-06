@@ -33,6 +33,8 @@ public class MessageClaimChunk extends MessageFTBU
 	
 	public IMessage onMessage(MessageContext ctx)
 	{
+	    // Don't allow claiming or unclaiming, only our Town Halls do this
+	    /*
 		int type = io.readUnsignedByte();
 		long token = io.readLong();
 		int dim = io.readInt();
@@ -63,6 +65,8 @@ public class MessageClaimChunk extends MessageFTBU
 		else if(type == ID_UNCLAIM_ALL_DIMS) p.unclaimAllChunks(null);
 		else if(type == ID_LOAD) p.setLoaded(dim, cx, cz, true);
 		else if(type == ID_UNLOAD) p.setLoaded(dim, cx, cz, false);
+		*/
 		return null;
+		
 	}
 }

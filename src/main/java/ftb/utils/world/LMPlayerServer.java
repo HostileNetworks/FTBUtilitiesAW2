@@ -305,17 +305,30 @@ public class LMPlayerServer extends LMPlayer // LMPlayerClient
 	public Rank getRank()
 	{ return Ranks.getRankFor(this); }
 	
-	public void claimChunk(int dim, int cx, int cz)
+	/**
+	 * @return true is claim was successful, false if not
+	 */
+	public boolean claimChunk(int dim, int cx, int cz)
 	{
 		RankConfig c = getRank().config;
-		if(c.dimension_blacklist.get().contains(dim)) return;
+		if (c.dimension_blacklist.get().contains(dim))
+		    return false;
 		int max = c.max_claims.get();
-		if(max == 0) return;
-		if(getClaimedChunks() >= max) return;
+		if(max == 0)
+		    return false;
+		if(getClaimedChunks() >= max) 
+		    return false;
 		
 		ChunkType t = world.claimedChunks.getType(dim, cx, cz);
-		if(!t.isClaimed() && t.isChunkOwner(this) && world.claimedChunks.put(new ClaimedChunk(getPlayerID(), dim, cx, cz)))
+		
+		if (t.isClaimed() && t.isChunkOwner(this))
+		    return true; // already claimed, but we want AW2's Town Hall to know
+		
+		if(!t.isClaimed() && t.isChunkOwner(this) && world.claimedChunks.put(new ClaimedChunk(getPlayerID(), dim, cx, cz))) {
 			sendUpdate();
+		    return true;
+		}
+		return false;
 	}
 	
 	public void unclaimChunk(int dim, int cx, int cz)
