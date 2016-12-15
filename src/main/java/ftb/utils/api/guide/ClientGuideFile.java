@@ -17,7 +17,7 @@ public class ClientGuideFile extends GuidePage
 	public ClientGuideFile(String id)
 	{
 		super(id);
-		setTitle(new ChatComponentTranslation("player_action.ftbu.guide"));
+		setTitle(new ChatComponentTranslation("player_action.ftbu_aw2.guide"));
 	}
 	
 	public void reload(EventFTBReload e)

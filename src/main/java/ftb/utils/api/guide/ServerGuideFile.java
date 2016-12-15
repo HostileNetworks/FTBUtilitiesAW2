@@ -19,7 +19,7 @@ public class ServerGuideFile extends GuidePage
 {
 	public static class CachedInfo
 	{
-		public static final GuidePage main = new GuidePage("server_info").setTitle(new ChatComponentTranslation("player_action.ftbu.server_info"));
+		public static final GuidePage main = new GuidePage("server_info").setTitle(new ChatComponentTranslation("player_action.ftbu_aw2.server_info"));
 		public static GuidePage categoryServer;
 		
 		public static void reload()
