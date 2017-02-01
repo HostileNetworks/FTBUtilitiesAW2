@@ -1,3 +1,7 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+ext.versionFile = file('gradle.properties')
+
 buildscript {
     repositories {
         mavenCentral()
@@ -16,34 +20,30 @@ buildscript {
 }
 
 apply plugin: 'forge'
-
-version = "1.0"
+minecraft {
+    version = "1.7.10-10.13.4.1614-1.7.10"
+    runDir = "eclipse"
+}
+version = project.major +"."+ project.minor +"."+  project.build+"-"+ project.releasetype + "-MC" +minecraft.version
 group= "ftb.utils" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "FTBU_AW2"
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-minecraft {
-    version = "1.7.10-10.13.4.1614-1.7.10"
-    runDir = "eclipse"
+task updateVersion(type:Copy){
+    ant.propertyfile(file: versionFile) {
+        entry(key: 'build', type: 'int', operation: '+', value: 001)
+    }
+    from(sourceSets.main.java.srcDirs){
+        exclude 'mcmod.info'
+    }
+    into 'build/sources/java'
+    filter(ReplaceTokens, tokens: [VERSION: project.version])
 }
 
-dependencies {
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-      
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
+compileJava.dependsOn updateVersion
 
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
-}
 
 processResources
 {
