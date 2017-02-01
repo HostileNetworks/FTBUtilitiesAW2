@@ -116,7 +116,9 @@ public class FTBUActions
 	public static final PlayerAction claims = new PlayerAction(PlayerAction.Type.SELF, "ftbu_aw2.claimed_chunks", 0, GuiIcons.map)
 	{
 		public void onClicked(ILMPlayer self, ILMPlayer other)
-		{ FTBLibClient.openGui(new GuiClaimChunks(0L)); }
+		{ 
+			FTBLibClient.openGui(new GuiClaimChunks(0L));
+		}
 		
 		public boolean isVisibleFor(ILMPlayer self, ILMPlayer other)
 		{ return FTBLibClient.isIngameWithFTBU(); }

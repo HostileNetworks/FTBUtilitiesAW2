@@ -20,6 +20,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.*;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 
 public class FTBUPlayerEventHandler
 {
@@ -133,12 +135,20 @@ public class FTBUPlayerEventHandler
 			int cx = MathHelperLM.chunk(e.entity.posX);
 			int cz = MathHelperLM.chunk(e.entity.posZ);
 			
-			if((FTBUConfigGeneral.safe_spawn.get() && ClaimedChunks.isInSpawn(dim, cx, cz))) e.setCanceled(true);
+			if((FTBUConfigGeneral.safe_spawn.get() && (LMWorldServer.inst.claimedChunks.getChunk(dim, cx, cz).ownerID == -1 || ClaimedChunks.isInSpawn(dim, cx, cz)))) e.setCanceled(true);
 			/*else
 			{
 				ClaimedChunk c = Claims.get(dim, cx, cz);
 				if(c != null && c.claims.settings.isSafe()) e.setCanceled(true);
 			}*/
 		}
+	}
+	
+	@SubscribeEvent
+	public void onBreakSpeed(BreakSpeed e) {
+		if (e.entityPlayer instanceof FakePlayer)
+			return;
+		else if(!ClaimedChunks.canPlayerInteract(e.entityPlayer, new ChunkCoordinates(e.x, e.y, e.z), false))
+			e.setCanceled(true);
 	}
 }

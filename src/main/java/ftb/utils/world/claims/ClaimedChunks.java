@@ -3,10 +3,14 @@ package ftb.utils.world.claims;
 import com.google.gson.*;
 import ftb.lib.*;
 import ftb.lib.api.item.LMInvUtils;
+import ftb.utils.mod.client.gui.claims.ClaimedAreasClient;
 import ftb.utils.mod.config.FTBUConfigGeneral;
+import ftb.utils.net.ClientAction;
+import ftb.utils.net.MessageAreaRequest;
 import ftb.utils.world.*;
 import latmod.lib.*;
 import latmod.lib.util.EnumEnabled;
+import latmod.lib.util.Pos2I;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.*;
 import net.minecraft.util.ChunkCoordinates;
@@ -77,19 +81,22 @@ public class ClaimedChunks
 			{
 				try
 				{
-					LMPlayerServer p = LMWorldServer.inst.getPlayer(LMUtils.fromString(e1.getKey()));
+					Integer id = e1.getKey().equals("-1") ? -1 : null;
 					
-					if(p != null)
-					{
+					if (id == null) {
+						LMPlayerServer p = LMWorldServer.inst.getPlayer(LMUtils.fromString(e1.getKey()));
+						if(p != null)
+							id = p.getPlayerID();
+					}
+					if (id != null) {
 						JsonArray chunksList = e1.getValue().getAsJsonArray();
-						
 						for(int k = 0; k < chunksList.size(); k++)
 						{
 							int[] ai = LMJsonUtils.fromIntArray(chunksList.get(k));
 							
 							if(ai != null)
 							{
-								ClaimedChunk c = new ClaimedChunk(p.getPlayerID(), dim, ai[0], ai[1]);
+								ClaimedChunk c = new ClaimedChunk(id, dim, ai[0], ai[1]);
 								if(ai.length >= 3 && ai[2] == 1) c.isChunkloaded = true;
 								map.put(Bits.intsToLong(ai[0], ai[1]), c);
 							}
@@ -117,11 +124,17 @@ public class ClaimedChunks
 			
 			for(ClaimedChunk c : LMMapUtils.values(e.getValue(), comparator2))
 			{
-				LMPlayerServer p = c.getOwnerS();
+				String id = "";
+				if (c.ownerID == -1)
+					id = "-1";
+				else {
+					LMPlayerServer p = c.getOwnerS();
+					if(p != null)
+						id = p.getStringUUID();
+				}
 				
-				if(p != null)
-				{
-					String id = p.getStringUUID();
+				if (!id.isEmpty()) {
+				
 					if(!o1.has(id)) o1.add(id, new JsonArray());
 					
 					JsonArray a = o1.get(id).getAsJsonArray();
@@ -206,6 +219,8 @@ public class ClaimedChunks
 		if(LMWorldServer.inst.settings.getWB(dim).isOutside(cx, cz)) return ChunkType.WORLD_BORDER;
 		ClaimedChunk c = getChunk(dim, cx, cz);
 		if(c == null) return ChunkType.WILDERNESS;
+		if (c.ownerID == -1)
+			return ChunkType.SPAWN;
 		return new ChunkType.PlayerClaimed(LMWorldServer.inst.getPlayer(c.ownerID));
 	}
 	
@@ -221,6 +236,7 @@ public class ClaimedChunks
 	
 	public static boolean isInSpawn(int dim, int cx, int cz)
 	{
+		// TODO: Check commonwealth?
 		if(dim != 0 || (!FTBLib.isDedicatedServer() && !FTBUConfigGeneral.spawn_area_in_sp.get())) return false;
 		int radius = FTBLib.getServer().getSpawnProtectionSize();
 		if(radius <= 0) return false;
@@ -244,6 +260,8 @@ public class ClaimedChunks
 			ClaimedChunk c = getChunk(dim, cx, cz);
 			if(c != null)
 			{
+				if (c.ownerID == -1 && FTBUConfigGeneral.safe_spawn.get())
+					return false;
 				LMPlayerServer p = c.getOwnerS();
 				
 				if(p != null)
@@ -258,9 +276,17 @@ public class ClaimedChunks
 		return true;
 	}
 	
-	public static boolean canPlayerInteract(EntityPlayer ep, ChunkCoordinates pos, boolean leftClick)
+	public static boolean canPlayerInteract(EntityPlayer ep, ChunkCoordinates pos, final boolean leftClick)
 	{
-		if(ep == null || ep.worldObj == null || ep.worldObj.isRemote) return true;
+		if(ep == null || ep.worldObj == null)
+			return true;
+		
+		if ((leftClick || ep.worldObj.isRemote) && !ep.capabilities.isCreativeMode) {
+			// fix clientside "ghosting"
+			int startX = MathHelperLM.chunk(pos.posX);
+			int startZ = MathHelperLM.chunk(pos.posZ);
+			return (ClaimedAreasClient.getTypeE(startX, startZ) != ChunkType.SPAWN);
+		}
 		
 		LMPlayerServer p = LMWorldServer.inst.getPlayer(ep);
 		

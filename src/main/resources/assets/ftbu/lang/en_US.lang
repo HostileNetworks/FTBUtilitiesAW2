@@ -88,7 +88,7 @@ ftbu_aw2.top.deaths_ph=Deaths per hour
 
 #Chunktypes
 ftbu_aw2.chunktype.unloaded=Chunk not loaded
-ftbu_aw2.chunktype.spawn=Spawn Area
+ftbu_aw2.chunktype.spawn=Commonwealth
 ftbu_aw2.chunktype.world_border=World Border
 ftbu_aw2.chunktype.world_border.warning=You have reached the world border!
 ftbu_aw2.chunktype.wilderness=Wilderness

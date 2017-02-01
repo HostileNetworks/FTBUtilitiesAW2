@@ -10,10 +10,12 @@ import ftb.utils.api.*;
 import ftb.utils.api.guide.ServerGuideFile;
 import ftb.utils.badges.ServerBadges;
 import ftb.utils.mod.FTBUTicks;
+import ftb.utils.mod.client.gui.claims.ClaimedAreasClient;
 import ftb.utils.mod.config.*;
 import ftb.utils.mod.handlers.FTBUChunkEventHandler;
 import ftb.utils.net.*;
 import ftb.utils.world.*;
+import ftb.utils.world.claims.ChunkType;
 import ftb.utils.world.claims.ClaimedChunks;
 import ftb.utils.world.ranks.Ranks;
 import latmod.lib.*;
@@ -197,7 +199,8 @@ public class FTBLIntegration implements FTBUIntegration // FTBLIntegrationClient
 	public void onRightClick(PlayerInteractEvent e)
 	{
 		if(e.entityPlayer instanceof FakePlayer || e.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR) return;
-		else if(!ClaimedChunks.canPlayerInteract(e.entityPlayer, new ChunkCoordinates(e.x, e.y, e.z), e.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
+		else if(!ClaimedChunks.canPlayerInteract(e.entityPlayer, new ChunkCoordinates(e.x, e.y, e.z), e.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK)) {
 			e.setCanceled(true);
+		}
 	}
 }

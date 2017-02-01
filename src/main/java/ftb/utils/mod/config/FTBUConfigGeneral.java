@@ -14,10 +14,10 @@ public class FTBUConfigGeneral
 	public static final ConfigEntryDouble restart_timer = new ConfigEntryDouble("restart_timer", 0D);
 	
 	@Info("If set to true, explosions and hostile mobs in spawn area will be disabled")
-	public static final ConfigEntryBool safe_spawn = new ConfigEntryBool("safe_spawn", false);
+	public static final ConfigEntryBool safe_spawn = new ConfigEntryBool("no_explosions_or_mobs_in_spawn_and_commonwealth", false);
 	
 	@Info("If set to false, players won't be able to attack each other in spawn area")
-	public static final ConfigEntryBool spawn_pvp = new ConfigEntryBool("spawn_pvp", true);
+	public static final ConfigEntryBool spawn_pvp = new ConfigEntryBool("pvp_allowed_in_spawn_and_commonwealth", true);
 	
 	@Info("Entity IDs that are banned from world. They will not spawn and existing ones will be destroyed")
 	private static final ConfigEntryStringArray blocked_entities = new ConfigEntryStringArray("blocked_entities");

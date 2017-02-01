@@ -1,11 +1,13 @@
 package ftb.utils.net;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.simpleimpl.*;
 import ftb.lib.LMAccessToken;
 import ftb.lib.api.net.LMNetworkWrapper;
 import ftb.utils.world.*;
 import ftb.utils.world.claims.ClaimedChunk;
 import latmod.lib.ByteCount;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 public class MessageClaimChunk extends MessageFTBU
 {
@@ -33,8 +35,10 @@ public class MessageClaimChunk extends MessageFTBU
 	
 	public IMessage onMessage(MessageContext ctx)
 	{
-	    // Don't allow claiming or unclaiming, only our Town Halls do this
-	    /*
+		EntityPlayerMP entityPlayer = ctx.getServerHandler().playerEntity;
+		if (!FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().func_152596_g(entityPlayer.getGameProfile()))
+			return null;
+	    
 		int type = io.readUnsignedByte();
 		long token = io.readLong();
 		int dim = io.readInt();
@@ -44,7 +48,7 @@ public class MessageClaimChunk extends MessageFTBU
 		LMPlayerServer p = LMWorldServer.inst.getPlayer(ctx.getServerHandler().playerEntity);
 		if(type == ID_CLAIM)
 		{
-			p.claimChunk(dim, cx, cz);
+			p.claimChunk(dim, cx, cz, true);
 			return new MessageAreaUpdate(p, cx, cz, dim, 1, 1);
 		}
 		else if(type == ID_UNCLAIM)
@@ -58,14 +62,14 @@ public class MessageClaimChunk extends MessageFTBU
 					p1.unclaimChunk(dim, cx, cz);
 				}
 			}
-			else p.unclaimChunk(dim, cx, cz);
+			else p.unclaimChunk(dim, cx, cz, true);
 			return new MessageAreaUpdate(p, cx, cz, dim, 1, 1);
 		}
 		else if(type == ID_UNCLAIM_ALL) p.unclaimAllChunks(Integer.valueOf(dim));
 		else if(type == ID_UNCLAIM_ALL_DIMS) p.unclaimAllChunks(null);
 		else if(type == ID_LOAD) p.setLoaded(dim, cx, cz, true);
 		else if(type == ID_UNLOAD) p.setLoaded(dim, cx, cz, false);
-		*/
+		
 		return null;
 		
 	}

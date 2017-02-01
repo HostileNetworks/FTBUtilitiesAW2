@@ -12,6 +12,7 @@ import ftb.utils.net.*;
 import ftb.utils.world.*;
 import ftb.utils.world.claims.ChunkType;
 import latmod.lib.MathHelperLM;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.entity.player.EntityPlayer;
@@ -365,14 +366,16 @@ public class GuiClaimChunks extends GuiLM implements GuiYesNoCallback // impleme
 		}
 		
 		public void onButtonPressed(int b) {
-		    // Don't allow claiming or unclaiming, only our Town Halls do this
-		    /*
 			if(gui.panelButtons.mouseOver()) return;
-			if(gui.adminToken != 0L && b == 0) return;
+			//Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().func_152596_g(p_152596_1_)
+			if(gui.adminToken != 0L)
+				return;
+			if (!Minecraft.getMinecraft().thePlayer.capabilities.isCreativeMode)
+				return; // cheap client-side check for op-ed players
 			boolean ctrl = FTBUClient.loaded_chunks_space_key.get() ? Keyboard.isKeyDown(Keyboard.KEY_SPACE) : isCtrlKeyDown();
 			new MessageClaimChunk(gui.currentDim, gui.adminToken, chunkX, chunkY, (b == 0) ? (ctrl ? MessageClaimChunk.ID_LOAD : MessageClaimChunk.ID_CLAIM) : (ctrl ? MessageClaimChunk.ID_UNLOAD : MessageClaimChunk.ID_UNCLAIM)).sendToServer();
 			FTBLibClient.playClickSound();
-			*/
+			
 		}
 		
 		public void addMouseOverText(List<String> l) { 

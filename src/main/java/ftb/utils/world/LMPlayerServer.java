@@ -305,10 +305,14 @@ public class LMPlayerServer extends LMPlayer // LMPlayerClient
 	public Rank getRank()
 	{ return Ranks.getRankFor(this); }
 	
+	public boolean claimChunk(int dim, int cx, int cz) {
+		return claimChunk(dim, cx, cz, false);
+	}
+	
 	/**
 	 * @return true is claim was successful, false if not
 	 */
-	public boolean claimChunk(int dim, int cx, int cz)
+	public boolean claimChunk(int dim, int cx, int cz, boolean isOpClaim)
 	{
 		RankConfig c = getRank().config;
 		if (c.dimension_blacklist.get().contains(dim))
@@ -324,16 +328,20 @@ public class LMPlayerServer extends LMPlayer // LMPlayerClient
 		if (t.isClaimed() && t.isChunkOwner(this))
 		    return true; // already claimed, but we want AW2's Town Hall to know
 		
-		if(!t.isClaimed() && t.isChunkOwner(this) && world.claimedChunks.put(new ClaimedChunk(getPlayerID(), dim, cx, cz))) {
+		if(!t.isClaimed() && t.isChunkOwner(this) && world.claimedChunks.put(new ClaimedChunk((isOpClaim ? -1 : getPlayerID()), dim, cx, cz))) {
 			sendUpdate();
 		    return true;
 		}
 		return false;
 	}
 	
-	public void unclaimChunk(int dim, int cx, int cz)
+	public void unclaimChunk(int dim, int cx, int cz) {
+		unclaimChunk(dim, cx, cz, false);
+	}
+	
+	public void unclaimChunk(int dim, int cx, int cz, boolean isOpClaim)
 	{
-		if(world.claimedChunks.getType(dim, cx, cz).isChunkOwner(this))
+		if (isOpClaim || world.claimedChunks.getType(dim, cx, cz).isChunkOwner(this))
 		{
 			setLoaded(dim, cx, cz, false);
 			world.claimedChunks.remove(dim, cx, cz);
