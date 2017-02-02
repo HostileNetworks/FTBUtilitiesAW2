@@ -135,7 +135,13 @@ public class FTBUPlayerEventHandler
 			int cx = MathHelperLM.chunk(e.entity.posX);
 			int cz = MathHelperLM.chunk(e.entity.posZ);
 			
-			if((FTBUConfigGeneral.safe_spawn.get() && (LMWorldServer.inst.claimedChunks.getChunk(dim, cx, cz).ownerID == -1 || ClaimedChunks.isInSpawn(dim, cx, cz)))) e.setCanceled(true);
+			ClaimedChunk targetChunk = LMWorldServer.inst.claimedChunks.getChunk(dim, cx, cz);
+			
+			if (targetChunk == null)
+				return;
+			
+			if((FTBUConfigGeneral.safe_spawn.get() && (targetChunk.ownerID == -1 || ClaimedChunks.isInSpawn(dim, cx, cz))))
+				e.setCanceled(true);
 			/*else
 			{
 				ClaimedChunk c = Claims.get(dim, cx, cz);

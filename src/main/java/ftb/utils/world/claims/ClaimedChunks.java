@@ -278,10 +278,10 @@ public class ClaimedChunks
 	
 	public static boolean canPlayerInteract(EntityPlayer ep, ChunkCoordinates pos, final boolean leftClick)
 	{
-		if(ep == null || ep.worldObj == null)
+		if(ep.capabilities.isCreativeMode || ep == null || ep.worldObj == null)
 			return true;
 		
-		if (ep.worldObj.isRemote && !ep.capabilities.isCreativeMode) {
+		if (ep.worldObj.isRemote) {
 			// fix clientside "ghosting"
 			int startX = MathHelperLM.chunk(pos.posX);
 			int startZ = MathHelperLM.chunk(pos.posZ);
