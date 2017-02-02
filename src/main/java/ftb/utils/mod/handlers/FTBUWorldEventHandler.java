@@ -6,6 +6,7 @@ import ftb.lib.LMNBTUtils;
 import ftb.utils.api.EventLMWorldServer;
 import ftb.utils.mod.config.FTBUConfigGeneral;
 import ftb.utils.world.*;
+import ftb.utils.world.claims.ClaimedChunk;
 import ftb.utils.world.claims.ClaimedChunks;
 import latmod.lib.*;
 import latmod.lib.util.Phase;
@@ -95,7 +96,12 @@ public class FTBUWorldEventHandler // FTBLIntegration
 		
 		if(FTBUConfigGeneral.isEntityBanned(e.getClass())) return false;
 		
-		if(FTBUConfigGeneral.safe_spawn.get() && (LMWorldServer.inst.claimedChunks.getChunk(e.dimension, MathHelperLM.chunk(e.posX), MathHelperLM.chunk(e.posZ)).ownerID == -1 || ClaimedChunks.isInSpawnD(e.dimension, e.posX, e.posZ)))
+		ClaimedChunk targetChunk = LMWorldServer.inst.claimedChunks.getChunk(e.dimension, MathHelperLM.chunk(e.posX), MathHelperLM.chunk(e.posZ));
+		
+		if (targetChunk == null)
+			return true;
+		
+		if(FTBUConfigGeneral.safe_spawn.get() && (targetChunk.ownerID == -1 || ClaimedChunks.isInSpawnD(e.dimension, e.posX, e.posZ)))
 		{
 			if(e instanceof IMob) return false;
 			else if(e instanceof EntityChicken && e.riddenByEntity != null) return false;

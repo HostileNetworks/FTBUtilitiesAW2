@@ -281,7 +281,7 @@ public class ClaimedChunks
 		if(ep == null || ep.worldObj == null)
 			return true;
 		
-		if ((leftClick || ep.worldObj.isRemote) && !ep.capabilities.isCreativeMode) {
+		if (ep.worldObj.isRemote && !ep.capabilities.isCreativeMode) {
 			// fix clientside "ghosting"
 			int startX = MathHelperLM.chunk(pos.posX);
 			int startZ = MathHelperLM.chunk(pos.posZ);
