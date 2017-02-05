@@ -140,7 +140,7 @@ public class FTBUPlayerEventHandler
 			if (targetChunk == null)
 				return;
 			
-			if((FTBUConfigGeneral.safe_spawn.get() && (targetChunk.ownerID == -1 || ClaimedChunks.isInSpawn(dim, cx, cz))))
+			if((FTBUConfigGeneral.spawn_or_commonwealth_pvp.get() && (targetChunk.ownerID == -1 || ClaimedChunks.isInSpawn(dim, cx, cz))))
 				e.setCanceled(true);
 			/*else
 			{
