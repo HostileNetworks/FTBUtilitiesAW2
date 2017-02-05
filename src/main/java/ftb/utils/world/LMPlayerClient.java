@@ -17,6 +17,7 @@ public class LMPlayerClient extends LMPlayer // LMPlayerServer // LMPlayerClient
 	public final LMWorldClient world;
 	public final List<String> clientInfo;
 	public boolean isOnline;
+	public boolean isOp = false;
 	
 	public LMPlayerClient(LMWorldClient w, int i, GameProfile gp)
 	{

@@ -253,14 +253,14 @@ public class ClaimedChunks
 	
 	public boolean allowExplosion(int dim, int cx, int cz)
 	{
-		if(dim == 0 && FTBUConfigGeneral.safe_spawn.get() && isInSpawn(dim, cx, cz)) return false;
+		if(dim == 0 && FTBUConfigGeneral.spawn_or_commonwealth_explosions.get() && isInSpawn(dim, cx, cz)) return false;
 		else if(LMWorldServer.inst.settings.getWB(dim).isOutside(cx, cz)) return false;
 		else
 		{
 			ClaimedChunk c = getChunk(dim, cx, cz);
 			if(c != null)
 			{
-				if (c.ownerID == -1 && FTBUConfigGeneral.safe_spawn.get())
+				if (c.ownerID == -1 && FTBUConfigGeneral.spawn_or_commonwealth_explosions.get())
 					return false;
 				LMPlayerServer p = c.getOwnerS();
 				
@@ -281,18 +281,32 @@ public class ClaimedChunks
 		if(ep.capabilities.isCreativeMode || ep == null || ep.worldObj == null)
 			return true;
 		
+		
 		if (ep.worldObj.isRemote) {
 			// fix clientside "ghosting"
+			if (LMWorldClient.inst.getPlayer(ep).isOp)
+				return true;
 			int startX = MathHelperLM.chunk(pos.posX);
 			int startZ = MathHelperLM.chunk(pos.posZ);
-			return (ClaimedAreasClient.getTypeE(startX, startZ) != ChunkType.SPAWN);
+			if (ClaimedAreasClient.getTypeE(startX, startZ) == ChunkType.SPAWN) {
+				if (leftClick)
+					return false;
+				// check if the block is interaction white-listed
+				if (!FTBUConfigGeneral.spawn_and_commonwealth_interact_whitelist.get().contains(LMInvUtils.getRegName(ep.worldObj.getBlock(pos.posX, pos.posY, pos.posZ))))
+					return false;
+			}
+			
+			return true;
 		}
 		
 		LMPlayerServer p = LMWorldServer.inst.getPlayer(ep);
 		
-		if(p == null) return true;
-		else if(!p.isFake() && p.allowInteractSecure()) return true;
-		else if(LMWorldServer.inst.settings.getWB(ep.dimension).isOutsideD(pos.posX, pos.posZ)) return false;
+		if(p == null)
+			return true;
+		else if(!p.isFake() && p.allowInteractSecure()) 
+			return true;
+		else if(LMWorldServer.inst.settings.getWB(ep.dimension).isOutsideD(pos.posX, pos.posZ)) 
+			return false;
 		
 		if(leftClick)
 		{
@@ -301,6 +315,12 @@ public class ClaimedChunks
 		}
 		
 		ChunkType type = LMWorldServer.inst.claimedChunks.getTypeD(ep.dimension, pos);
-		return type.canInteract(p, leftClick);
+		boolean canInteract = type.canInteract(p, leftClick);
+		if (!canInteract && !leftClick) {
+			// check if the block is interaction white-listed
+			if (FTBUConfigGeneral.spawn_and_commonwealth_interact_whitelist.get().contains(LMInvUtils.getRegName(ep.worldObj.getBlock(pos.posX, pos.posY, pos.posZ))))
+				return true;
+		}
+		return canInteract;
 	}
 }

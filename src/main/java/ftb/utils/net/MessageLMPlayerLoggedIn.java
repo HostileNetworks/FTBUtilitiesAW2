@@ -3,6 +3,7 @@ package ftb.utils.net;
 import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.common.network.simpleimpl.*;
 import cpw.mods.fml.relauncher.*;
+import ftb.lib.FTBLib;
 import ftb.utils.api.EventLMPlayerClient;
 import ftb.utils.world.*;
 import latmod.lib.ByteCount;
@@ -20,6 +21,7 @@ public class MessageLMPlayerLoggedIn extends MessageFTBU
 		io.writeInt(p.getPlayerID());
 		io.writeUUID(p.getProfile().getId());
 		io.writeUTF(p.getProfile().getName());
+		io.writeBoolean(FTBLib.isOP(p.getProfile()));
 		io.writeBoolean(first);
 		p.writeToNet(io, self);
 	}
@@ -32,6 +34,7 @@ public class MessageLMPlayerLoggedIn extends MessageFTBU
 		int playerID = io.readInt();
 		UUID uuid = io.readUUID();
 		String username = io.readUTF();
+		boolean isOp = io.readBoolean();
 		boolean firstTime = io.readBoolean();
 		
 		LMPlayerClient p = LMWorldClient.inst.getPlayer(playerID);
@@ -39,6 +42,7 @@ public class MessageLMPlayerLoggedIn extends MessageFTBU
 		if(add) p = new LMPlayerClient(LMWorldClient.inst, playerID, new GameProfile(uuid, username));
 		p.readFromNet(io, p.getPlayerID() == LMWorldClient.inst.clientPlayerID);
 		LMWorldClient.inst.playerMap.put(p.getPlayerID(), p);
+		p.isOp = isOp;
 		new EventLMPlayerClient.LoggedIn(p, firstTime).post();
 		new EventLMPlayerClient.DataLoaded(p).post();
 		return null;
