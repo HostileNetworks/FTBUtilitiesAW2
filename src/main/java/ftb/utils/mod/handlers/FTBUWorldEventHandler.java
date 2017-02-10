@@ -101,7 +101,7 @@ public class FTBUWorldEventHandler // FTBLIntegration
 		if (targetChunk == null)
 			return true;
 		
-		if(FTBUConfigGeneral.spawn_or_commonwealth_mobs.get() && (targetChunk.ownerID == -1 || ClaimedChunks.isInSpawnD(e.dimension, e.posX, e.posZ)))
+		if(!FTBUConfigGeneral.spawn_or_commonwealth_mobs.get() && (targetChunk.ownerID == -1 || ClaimedChunks.isInSpawnD(e.dimension, e.posX, e.posZ)))
 		{
 			if(e instanceof IMob) return false;
 			else if(e instanceof EntityChicken && e.riddenByEntity != null) return false;
