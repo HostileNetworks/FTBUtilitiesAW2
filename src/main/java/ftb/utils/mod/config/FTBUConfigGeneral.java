@@ -3,12 +3,16 @@ package ftb.utils.mod.config;
 import cpw.mods.fml.relauncher.Side;
 import ftb.lib.api.config.*;
 import latmod.lib.annotations.*;
+import latmod.lib.util.BlockAndMeta;
 import net.minecraft.entity.*;
 
 import java.util.*;
 
 public class FTBUConfigGeneral
 {
+	private static HashSet<BlockAndMeta> spawn_and_commonwealth_interact_whitelist = new HashSet<BlockAndMeta>(); 
+	private static boolean spawn_and_commonwealth_interact_whitelist_built = false;
+	
 	@NumberBounds(min = 0D, max = 720D)
 	@Info({"Server will automatically shut down after X hours", "0 - Disabled", "0.5 - 30 minutes", "1 - 1 Hour", "24 - 1 Day", "168 - 1 Week", "720 - 1 Month"})
 	public static final ConfigEntryDouble restart_timer = new ConfigEntryDouble("restart_timer", 0D);
@@ -33,7 +37,7 @@ public class FTBUConfigGeneral
 	public static final ConfigEntryBool server_info_mode = new ConfigEntryBool("server_info_mode", true);
 	
 	@Info("Block IDs that any player can interact with in the spawn/commonwealth zones")
-	public static final ConfigEntryStringArray spawn_and_commonwealth_interact_whitelist = new ConfigEntryStringArray("spawn_and_commonwealth_interact_whitelist", "minecraft:wooden_door");
+	private static final ConfigEntryStringArray spawn_and_commonwealth_interact_whitelist_raw = new ConfigEntryStringArray("spawn_and_commonwealth_interact_whitelist", "minecraft:wooden_door");
 	
 	private static final List<Class<?>> blockedEntitiesL = new ArrayList<>();
 	
@@ -71,6 +75,14 @@ public class FTBUConfigGeneral
 			}
 		}
 		*/
+	}
+	
+	public static HashSet<BlockAndMeta> getInteractWhitelist() {
+		if (!spawn_and_commonwealth_interact_whitelist_built) {
+			spawn_and_commonwealth_interact_whitelist = BlockAndMeta.buildList("Spawn/Commonwealth Interact Whitelist", spawn_and_commonwealth_interact_whitelist_raw);
+			spawn_and_commonwealth_interact_whitelist_built = true;
+		}
+		return spawn_and_commonwealth_interact_whitelist;
 	}
 	
 	public static boolean isEntityBanned(Class<?> c)

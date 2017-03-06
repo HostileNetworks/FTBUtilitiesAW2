@@ -74,8 +74,7 @@ public class FTBLibEventHandler
 	}
 	
 	@SubscribeEvent
-	public void onRightClick(PlayerInteractEvent e)
-	{
-		if(FTBLib.ftbu != null) FTBLib.ftbu.onRightClick(e);
+	public void onPlayerInteract(PlayerInteractEvent e) {
+		if(FTBLib.ftbu != null) FTBLib.ftbu.onPlayerInteract(e);
 	}
 }

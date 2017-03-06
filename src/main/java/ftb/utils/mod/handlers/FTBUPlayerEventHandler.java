@@ -21,6 +21,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 
 public class FTBUPlayerEventHandler
@@ -152,9 +153,7 @@ public class FTBUPlayerEventHandler
 	
 	@SubscribeEvent
 	public void onBreakSpeed(BreakSpeed e) {
-		if (e.entityPlayer instanceof FakePlayer)
-			return;
-		else if(!ClaimedChunks.canPlayerInteract(e.entityPlayer, new ChunkCoordinates(e.x, e.y, e.z), false))
+		if(!ClaimedChunks.canPlayerInteract(e.entityPlayer, new ChunkCoordinates(e.x, e.y, e.z), false))
 			e.setCanceled(true);
 	}
 }

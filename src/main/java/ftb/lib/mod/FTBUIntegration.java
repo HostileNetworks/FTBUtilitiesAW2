@@ -23,5 +23,5 @@ public interface FTBUIntegration // FTBLIntegration
 	boolean hasClientWorld();
 	void renderWorld(float pt);
 	void onTooltip(ItemTooltipEvent e);
-	void onRightClick(PlayerInteractEvent e);
+	void onPlayerInteract(PlayerInteractEvent e);
 }

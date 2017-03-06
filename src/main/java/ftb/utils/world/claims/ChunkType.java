@@ -42,12 +42,16 @@ public class ChunkType
 		
 		public boolean canInteract(LMPlayerServer p, boolean leftClick)
 		{
-			if(chunkOwner.equals(p)) return true;
-			else if(p.isFake()) return chunkOwner.getSettings().get(PersonalSettings.FAKE_PLAYERS);
+			if(chunkOwner.equals(p)) {
+				return true;
+			} else if(p.isFake()) {
+				return chunkOwner.getSettings().get(PersonalSettings.FAKE_PLAYERS);
+			}
 			
 			LMSecurity s = new LMSecurity(chunkOwner);
 			s.level = p.getRank().config.forced_chunk_security.get();
 			if(s.level == null) s.level = chunkOwner.getSettings().blocks;
+            
 			return s.canInteract(p);
 		}
 	}
@@ -89,6 +93,7 @@ public class ChunkType
 	public int getAreaColor(LMPlayer p)
 	{ return areaColor; }
 	
-	public boolean canInteract(LMPlayerServer p, boolean leftClick)
-	{ return this == WILDERNESS || this == SPAWN; }
+	public boolean canInteract(LMPlayerServer p, boolean leftClick) {
+		return this == WILDERNESS || this != SPAWN;
+    }
 }

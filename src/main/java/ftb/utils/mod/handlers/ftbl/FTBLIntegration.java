@@ -196,9 +196,9 @@ public class FTBLIntegration implements FTBUIntegration // FTBLIntegrationClient
 	{
 	}
 	
-	public void onRightClick(PlayerInteractEvent e)
-	{
-		if(e.entityPlayer instanceof FakePlayer || e.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR) return;
+	public void onPlayerInteract(PlayerInteractEvent e) {
+		if (e.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR)
+			return;
 		else if(!ClaimedChunks.canPlayerInteract(e.entityPlayer, new ChunkCoordinates(e.x, e.y, e.z), e.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK)) {
 			e.setCanceled(true);
 		}

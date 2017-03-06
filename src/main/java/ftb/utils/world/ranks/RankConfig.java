@@ -1,13 +1,19 @@
 package ftb.utils.world.ranks;
 
+import java.util.HashSet;
+
 import ftb.lib.PrivacyLevel;
 import ftb.lib.api.config.*;
 import latmod.lib.IntList;
 import latmod.lib.annotations.*;
+import latmod.lib.util.BlockAndMeta;
 import latmod.lib.util.EnumEnabled;
 
 public class RankConfig
 {
+	private HashSet<BlockAndMeta> break_whitelist = new HashSet<BlockAndMeta>();
+	private static boolean break_whitelist_built = false;
+	
 	public final ConfigGroup custom = new ConfigGroup("custom_config");
 	
 	@NumberBounds(min = 0, max = 30000)
@@ -30,7 +36,7 @@ public class RankConfig
 	public final ConfigEntryEnum<PrivacyLevel> forced_chunk_security = new ConfigEntryEnum<>("forced_chunk_security", PrivacyLevel.VALUES_3, null, true);
 	
 	@Info("Block IDs that you can break in claimed chunks")
-	public final ConfigEntryStringArray break_whitelist = new ConfigEntryStringArray("break_whitelist", "OpenBlocks:grave");
+	private final ConfigEntryStringArray break_whitelist_raw = new ConfigEntryStringArray("break_whitelist", "OpenBlocks:grave");
 	
 	@Flags(Flags.SYNC)
 	@Info("Dimensions where players can't claim")
@@ -51,5 +57,13 @@ public class RankConfig
 		ConfigGroup g = new ConfigGroup(id);
 		g.addAll(RankConfig.class, this, copy);
 		return g;
+	}
+	
+	public HashSet<BlockAndMeta> getBreakWhitelist() {
+		if (!break_whitelist_built) {
+			break_whitelist = BlockAndMeta.buildList("Break block whitelist", break_whitelist_raw);
+			break_whitelist_built = true;
+		}
+		return break_whitelist;
 	}
 }

@@ -9,6 +9,7 @@ import ftb.utils.net.ClientAction;
 import ftb.utils.net.MessageAreaRequest;
 import ftb.utils.world.*;
 import latmod.lib.*;
+import latmod.lib.util.BlockAndMeta;
 import latmod.lib.util.EnumEnabled;
 import latmod.lib.util.Pos2I;
 import net.minecraft.entity.player.EntityPlayer;
@@ -276,15 +277,16 @@ public class ClaimedChunks
 		return true;
 	}
 	
-	public static boolean canPlayerInteract(EntityPlayer ep, ChunkCoordinates pos, final boolean leftClick)
+	public static boolean canPlayerInteract(final EntityPlayer entityPlayer, ChunkCoordinates pos, final boolean leftClick)
 	{
-		if(ep.capabilities.isCreativeMode || ep == null || ep.worldObj == null)
+		
+		if(entityPlayer.capabilities.isCreativeMode || entityPlayer == null || entityPlayer.worldObj == null)
 			return true;
 		
-		
-		if (ep.worldObj.isRemote) {
+		if (entityPlayer.worldObj.isRemote) {
 			// fix clientside "ghosting"
-			if (LMWorldClient.inst.getPlayer(ep).isOp)
+			LMPlayerClient lmPlayerClient = LMWorldClient.inst.getPlayer(entityPlayer);
+			if (lmPlayerClient != null && lmPlayerClient.isOp)
 				return true;
 			int startX = MathHelperLM.chunk(pos.posX);
 			int startZ = MathHelperLM.chunk(pos.posZ);
@@ -292,34 +294,33 @@ public class ClaimedChunks
 				if (leftClick)
 					return false;
 				// check if the block is interaction white-listed
-				if (!FTBUConfigGeneral.spawn_and_commonwealth_interact_whitelist.get().contains(LMInvUtils.getRegName(ep.worldObj.getBlock(pos.posX, pos.posY, pos.posZ))))
+				if (!FTBUConfigGeneral.getInteractWhitelist().contains(LMInvUtils.getRegName(entityPlayer.worldObj.getBlock(pos.posX, pos.posY, pos.posZ)))) {
 					return false;
+				}
 			}
-			
 			return true;
 		}
 		
-		LMPlayerServer p = LMWorldServer.inst.getPlayer(ep);
+		LMPlayerServer lmPlayerServer = LMWorldServer.inst.getPlayer(entityPlayer);
 		
-		if(p == null)
-			return true;
-		else if(!p.isFake() && p.allowInteractSecure()) 
-			return true;
-		else if(LMWorldServer.inst.settings.getWB(ep.dimension).isOutsideD(pos.posX, pos.posZ)) 
+		if(lmPlayerServer != null && !lmPlayerServer.isFake() && lmPlayerServer.allowInteractSecure()) {
+			return true;		
+		} else if(LMWorldServer.inst.settings.getWB(entityPlayer.dimension).isOutsideD(pos.posX, pos.posZ)) {
 			return false;
+		}
 		
-		if(leftClick)
-		{
-			if(p.getRank().config.break_whitelist.get().contains(LMInvUtils.getRegName(ep.worldObj.getBlock(pos.posX, pos.posY, pos.posZ))))
+		if(leftClick) {
+			if(lmPlayerServer.getRank().config.getBreakWhitelist().contains(LMInvUtils.getRegName(entityPlayer.worldObj.getBlock(pos.posX, pos.posY, pos.posZ))))
 				return true;
 		}
 		
-		ChunkType type = LMWorldServer.inst.claimedChunks.getTypeD(ep.dimension, pos);
-		boolean canInteract = type.canInteract(p, leftClick);
+		ChunkType type = LMWorldServer.inst.claimedChunks.getTypeD(entityPlayer.dimension, pos);
+		boolean canInteract = type.canInteract(lmPlayerServer, leftClick);
 		if (!canInteract && !leftClick) {
 			// check if the block is interaction white-listed
-			if (FTBUConfigGeneral.spawn_and_commonwealth_interact_whitelist.get().contains(LMInvUtils.getRegName(ep.worldObj.getBlock(pos.posX, pos.posY, pos.posZ))))
+			if (FTBUConfigGeneral.getInteractWhitelist().contains(LMInvUtils.getRegName(entityPlayer.worldObj.getBlock(pos.posX, pos.posY, pos.posZ)))) {
 				return true;
+			}
 		}
 		return canInteract;
 	}
