@@ -23,8 +23,9 @@ public class ClaimedChunks
 {
 	public final Map<Integer, Map<Long, ClaimedChunk>> chunks;
 	
-	public ClaimedChunks()
-	{ chunks = new HashMap<>(); }
+	public ClaimedChunks() { 
+		chunks = Collections.synchronizedMap(new HashMap<Integer, Map<Long, ClaimedChunk>>());
+	}
 	
 	public List<ClaimedChunk> getAllChunks()
 	{
@@ -119,36 +120,38 @@ public class ClaimedChunks
 		Comparator<Map.Entry<Integer, Map<Long, ClaimedChunk>>> comparator = LMMapUtils.byKeyNumbers();
 		Comparator<Map.Entry<Long, ClaimedChunk>> comparator2 = LMMapUtils.byKeyNumbers();
 		
-		for(Map.Entry<Integer, Map<Long, ClaimedChunk>> e : LMMapUtils.sortedEntryList(chunks, comparator))
-		{
-			JsonObject o1 = new JsonObject();
-			
-			for(ClaimedChunk c : LMMapUtils.values(e.getValue(), comparator2))
+		synchronized (chunks) {
+			for(Map.Entry<Integer, Map<Long, ClaimedChunk>> e : LMMapUtils.sortedEntryList(chunks, comparator))
 			{
-				String id = "";
-				if (c.ownerID == -1)
-					id = "-1";
-				else {
-					LMPlayerServer p = c.getOwnerS();
-					if(p != null)
-						id = p.getStringUUID();
+				JsonObject o1 = new JsonObject();
+				
+				for(ClaimedChunk c : LMMapUtils.values(e.getValue(), comparator2))
+				{
+					String id = "";
+					if (c.ownerID == -1)
+						id = "-1";
+					else {
+						LMPlayerServer p = c.getOwnerS();
+						if(p != null)
+							id = p.getStringUUID();
+					}
+					
+					if (!id.isEmpty()) {
+					
+						if(!o1.has(id)) o1.add(id, new JsonArray());
+						
+						JsonArray a = o1.get(id).getAsJsonArray();
+						
+						JsonArray a1 = new JsonArray();
+						a1.add(new JsonPrimitive(c.posX));
+						a1.add(new JsonPrimitive(c.posZ));
+						if(c.isChunkloaded) a1.add(new JsonPrimitive(1));
+						a.add(a1);
+					}
 				}
 				
-				if (!id.isEmpty()) {
-				
-					if(!o1.has(id)) o1.add(id, new JsonArray());
-					
-					JsonArray a = o1.get(id).getAsJsonArray();
-					
-					JsonArray a1 = new JsonArray();
-					a1.add(new JsonPrimitive(c.posX));
-					a1.add(new JsonPrimitive(c.posZ));
-					if(c.isChunkloaded) a1.add(new JsonPrimitive(1));
-					a.add(a1);
-				}
+				group.add(e.getKey().toString(), o1);
 			}
-			
-			group.add(e.getKey().toString(), o1);
 		}
 	}
 	
