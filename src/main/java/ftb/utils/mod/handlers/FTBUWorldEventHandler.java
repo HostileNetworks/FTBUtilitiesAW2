@@ -71,7 +71,7 @@ public class FTBUWorldEventHandler // FTBLIntegration
 					l.add(sb.toString());
 				}
 				
-				LMFileUtils.save(new File(e.world.getSaveHandler().getWorldDirectory(), "latmod/LMPlayers.txt"), l);
+				LMFileUtils.save(new File(LMWorldServer.inst.latmodFolder, "LMPlayers.txt"), l);
 			}
 			catch(Exception ex)
 			{
